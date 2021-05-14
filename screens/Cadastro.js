@@ -40,10 +40,14 @@ export default function Cadastro() {
   const [email, setEmail] = React.useState("");
 
   return (
-    <View>
+    <View style={styleFormat.container}>
+
       <ScrollView horizontal={false}>
-     {/* Começo  Área do cadastro de Usuario */}
-        <View>
+
+        {/* Começo  Área do cadastro de Usuario */}
+
+        <View style={styleFormat.cxInput}>
+
           <TextInput
             style={styleFormat.input}
             placeholder="Nome Usuário"
@@ -60,13 +64,17 @@ export default function Cadastro() {
             secureTextEntry
             onChangeText={(value) => setSenha(value)}
           />
+
         </View>
-     {/* Fim da área do cadastro de Usuario */}
 
-     {/* ----------------------------------------------------------------------------------------------------------------------------- */}
+        {/* Fim da área do cadastro de Usuario */}
 
-     {/* Começo  Área do cadastro de Cliente */}
-        <View>
+        {/* ----------------------------------------------------------------------------------------------------------------------------- */}
+
+        {/* Começo  Área do cadastro de Cliente */}
+
+        <View style={styleFormat.cxInput}>
+
           <TextInput
             style={styleFormat.input}
             placeholder="Nome Cliente"
@@ -83,21 +91,28 @@ export default function Cadastro() {
             onChangeText={(value) => setCPF(value)}
           />
 
-          {/* <TextInput
-          style={styleFormat.input}
-          placeholder="sexo"
-          value={sexo}
-          keyboardType="default"
-          onChangeText={(value) => setSexo(value)}
-            />
-            */}
+          <Picker
+            mode="dropdown"
+            selectedValue={sexo}
+            onValueChange={setSexo}
+            style={styleFormat.input} >
+
+            <Picker.Item label="Masculino" value="M" />
+            <Picker.Item label="Feminino" value="F" />
+            <Picker.Item label="Outro" value="O" />
+
+          </Picker>
+
         </View>
-     {/* Fim da área do cadastro de Cliente */}
 
-     {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
+        {/* Fim da área do cadastro de Cliente */}
 
-     {/* Começo  Área do cadastro de Endereço */}
-        <View>
+        {/* ------------------------------------------------------------------------------------------------------------------------------------ */}
+
+        {/* Começo  Área do cadastro de Endereço */}
+
+        <View style={styleFormat.cxInput}>
+
           <TextInput
             style={styleFormat.input}
             placeholder="Logradouro"
@@ -137,13 +152,17 @@ export default function Cadastro() {
             keyboardType="number-pad"
             onChangeText={(value) => setCep(value)}
           />
+
         </View>
-     {/* Fim da área do cadastro de Endereço */}
 
-     {/* -------------------------------------------------------------------------------------------------------------------------------------- */}
+        {/* Fim da área do cadastro de Endereço */}
 
-     {/* Começo Área do cadastro de Contato */}
-        <View>
+        {/* -------------------------------------------------------------------------------------------------------------------------------------- */}
+
+        {/* Começo Área do cadastro de Contato */}
+
+        <View style={styleFormat.cxInput}>
+
           <TextInput
             style={styleFormat.input}
             placeholder="Telefone"
@@ -159,15 +178,18 @@ export default function Cadastro() {
             keyboardType="email-address"
             onChangeText={(value) => setEmail(value)}
           />
+
         </View>
-     {/* Fim da área do cadastro de Contato */}
+
+        {/* Fim da área do cadastro de Contato */}
 
         <TouchableOpacity style={styleFormat.btnCadastro}>
-          <Text style={styleFormat.txtCadastro}> Cadastra</Text>
-        </TouchableOpacity>
 
+          <Text style={styleFormat.txtCadastro}> Cadastrar </Text>
+
+        </TouchableOpacity>
+        
       </ScrollView>
-      
     </View>
   );
 }
