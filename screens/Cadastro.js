@@ -1,7 +1,8 @@
 import * as React from "react";
-import { View, Text, TextInput, Picker } from "react-native";
+import { View, Text, TextInput, Picker, Alert, ToastAndroid } from "react-native";
 import { styleFormat } from "../css/styles";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
+import { ipserver} from "../config/settings"
 
 let us = ""; // USUARIO
 let sh = ""; // SENHA
@@ -41,13 +42,10 @@ export default function Cadastro() {
 
   return (
     <View style={styleFormat.container}>
-
       <ScrollView horizontal={false}>
-
         {/* Começo  Área do cadastro de Usuario */}
 
         <View style={styleFormat.cxInput}>
-
           <TextInput
             style={styleFormat.input}
             placeholder="Nome Usuário"
@@ -64,7 +62,6 @@ export default function Cadastro() {
             secureTextEntry
             onChangeText={(value) => setSenha(value)}
           />
-
         </View>
 
         {/* Fim da área do cadastro de Usuario */}
@@ -74,7 +71,6 @@ export default function Cadastro() {
         {/* Começo  Área do cadastro de Cliente */}
 
         <View style={styleFormat.cxInput}>
-
           <TextInput
             style={styleFormat.input}
             placeholder="Nome Cliente"
@@ -95,14 +91,12 @@ export default function Cadastro() {
             mode="dropdown"
             selectedValue={sexo}
             onValueChange={setSexo}
-            style={styleFormat.input} >
-
+            style={styleFormat.input}
+          >
             <Picker.Item label="Masculino" value="M" />
             <Picker.Item label="Feminino" value="F" />
             <Picker.Item label="Outro" value="O" />
-
           </Picker>
-
         </View>
 
         {/* Fim da área do cadastro de Cliente */}
@@ -112,7 +106,6 @@ export default function Cadastro() {
         {/* Começo  Área do cadastro de Endereço */}
 
         <View style={styleFormat.cxInput}>
-
           <TextInput
             style={styleFormat.input}
             placeholder="Logradouro"
@@ -152,7 +145,6 @@ export default function Cadastro() {
             keyboardType="number-pad"
             onChangeText={(value) => setCep(value)}
           />
-
         </View>
 
         {/* Fim da área do cadastro de Endereço */}
@@ -162,7 +154,6 @@ export default function Cadastro() {
         {/* Começo Área do cadastro de Contato */}
 
         <View style={styleFormat.cxInput}>
-
           <TextInput
             style={styleFormat.input}
             placeholder="Telefone"
@@ -178,13 +169,13 @@ export default function Cadastro() {
             keyboardType="email-address"
             onChangeText={(value) => setEmail(value)}
           />
-
         </View>
 
         {/* Fim da área do cadastro de Contato */}
 
-        <TouchableOpacity style={styleFormat.btnCadastro}
-          onPress={()=>{
+        <TouchableOpacity
+          style={styleFormat.btnCadastro}
+          onPress={() => {
             us = usuario;
             sh = senha;
             nc = nomecliente;
@@ -199,7 +190,7 @@ export default function Cadastro() {
             em = email;
 
             efetuarCadastro();
-
+            ToastAndroid.showWithGravity("Aguarde... Efetuando o cadastro", ToastAndroid.SHORT, ToastAndroid.CENTER);
           }}
         >
           <Text style={styleFormat.txtCadastro}> Cadastrar </Text>
@@ -209,17 +200,107 @@ export default function Cadastro() {
   );
 }
 
-function efetuarCadastro(){
+function efetuarCadastro() {
+  let idusuario = "";
+  let idcontato = "";
+  let idendereco = "";
 
-  fetch(`${ipserver}/usuario/cadastro`,{
-    method:"POST",
-    headers:{
-      accept:"application/json",
-      "content-type":"application/json"
+  fetch(`${ipserver}/usuario/cadastro`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
     },
-    body:JSON.stringify({
-      nomeusuario:us,
-      senha:sh
+    body: JSON.stringify({
+      nomeusuario: us,
+      senha: sh,
+    }),
+  })
+    .then((response) => response.json())
+    .then((rs) => idusuario = rs.output.insertId)
+    .catch((error) => console.error(`Erro ao tentar cadastrar -> ${error}`));
+    
+
+  // --------------------------------------------------------------------------------------------------------------------------------------
+
+
+  fetch(`${ipserver}/contato/cadastro`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      telefone: tl,
+      email: em,
+    }),
+  })
+    .then((response) => response.json())
+    .then((rs) => idcontato = rs.output.insertId)
+    .catch((error) => console.error(`Erro ao tentar cadastrar -> ${error}`));
+
+
+  // --------------------------------------------------------------------------------------------------------------------------------------
+
+
+  fetch(`${ipserver}/endereco/cadastro`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      logradouro: lg,
+      numero: nr,
+      complemento: cp,
+      bairro: br,
+      cep: ce,
+    }),
+  })
+    .then((response) => response.json())
+    .then((rs) => idendereco = rs.output.insertId)
+    .catch((error) => console.error(`Erro ao tentar cadastrar -> ${error}`));
+
+
+  // --------------------------------------------------------------------------------------------------------------------------------------
+  
+  
+
+
+    perai (2000).then(() => {
+
+      fetch(`${ipserver}/cliente/cadastro`, {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          nomecliente:nc,
+          cpf:cf,
+          sexo:sx,
+          idusuario:idusuario,
+          idcontato:idcontato,
+          idendereco:idendereco
+        }),
+      })
+        .then((response) => response.json())
+        .then((rs) => {
+          console.log(rs);
+          Alert.alert("Cadastro", "Cliente Cadastrado")
+        }
+          )
+        .catch((error) => Alert.alert("Erro", `Erro ao tentar cadastrar -> ${error}`));
+
     })
+
+
+
+
+}
+
+const perai = (tempo) => {
+  return new Promise((resolver) => {
+    setTimeout(resolver, tempo)
   })
 }
