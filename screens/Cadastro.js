@@ -183,13 +183,43 @@ export default function Cadastro() {
 
         {/* Fim da área do cadastro de Contato */}
 
-        <TouchableOpacity style={styleFormat.btnCadastro}>
+        <TouchableOpacity style={styleFormat.btnCadastro}
+          onPress={()=>{
+            us = usuario;
+            sh = senha;
+            nc = nomecliente;
+            cf = cpf;
+            sx = sexo;
+            lg = logradouro;
+            nr = numero;
+            cp = complemento;
+            br = bairro;
+            ce = cep;
+            tl = telefone;
+            em = email;
 
+            efetuarCadastro();
+
+          }}
+        >
           <Text style={styleFormat.txtCadastro}> Cadastrar </Text>
-
         </TouchableOpacity>
-        
       </ScrollView>
     </View>
   );
+}
+
+function efetuarCadastro(){
+
+  fetch(`${ipserver}/usuario/cadastro`,{
+    method:"POST",
+    headers:{
+      accept:"application/json",
+      "content-type":"application/json"
+    },
+    body:JSON.stringify({
+      nomeusuario:us,
+      senha:sh
+    })
+  })
 }
